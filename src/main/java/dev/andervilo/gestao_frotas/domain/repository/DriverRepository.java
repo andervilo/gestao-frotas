@@ -1,7 +1,10 @@
 package dev.andervilo.gestao_frotas.domain.repository;
 
+import dev.andervilo.gestao_frotas.application.dto.DriverFilterDTO;
 import dev.andervilo.gestao_frotas.domain.entity.Driver;
 import dev.andervilo.gestao_frotas.domain.enums.DriverStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +24,8 @@ public interface DriverRepository {
     Optional<Driver> findByCnh(String cnh);
     
     List<Driver> findAll();
+    
+    Page<Driver> findAll(DriverFilterDTO filter, Pageable pageable);
     
     List<Driver> findByStatus(DriverStatus status);
     

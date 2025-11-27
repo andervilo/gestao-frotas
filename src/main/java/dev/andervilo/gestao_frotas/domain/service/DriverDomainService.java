@@ -1,9 +1,12 @@
 package dev.andervilo.gestao_frotas.domain.service;
 
+import dev.andervilo.gestao_frotas.application.dto.DriverFilterDTO;
 import dev.andervilo.gestao_frotas.domain.entity.Driver;
 import dev.andervilo.gestao_frotas.domain.enums.DriverStatus;
 import dev.andervilo.gestao_frotas.domain.repository.DriverRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -67,6 +70,13 @@ public class DriverDomainService {
      */
     public List<Driver> findAllDrivers() {
         return driverRepository.findAll();
+    }
+    
+    /**
+     * Finds all drivers with filters and pagination.
+     */
+    public Page<Driver> findAllDrivers(DriverFilterDTO filter, Pageable pageable) {
+        return driverRepository.findAll(filter, pageable);
     }
     
     /**

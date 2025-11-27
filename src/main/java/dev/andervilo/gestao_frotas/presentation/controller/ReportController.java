@@ -25,6 +25,8 @@ public class ReportController {
     private final ExportFleetUtilizationReportUseCase exportFleetUtilizationReportUseCase;
     private final GenerateMaintenanceReportUseCase generateMaintenanceReportUseCase;
     private final ExportMaintenanceReportUseCase exportMaintenanceReportUseCase;
+    private final GenerateCorrectiveMaintenanceReportUseCase generateCorrectiveMaintenanceReportUseCase;
+    private final ExportCorrectiveMaintenanceReportUseCase exportCorrectiveMaintenanceReportUseCase;
     private final GenerateDriverPerformanceReportUseCase generateDriverPerformanceReportUseCase;
     private final ExportDriverPerformanceReportUseCase exportDriverPerformanceReportUseCase;
     private final GenerateTripReportUseCase generateTripReportUseCase;
@@ -39,6 +41,8 @@ public class ReportController {
         ExportFleetUtilizationReportUseCase exportFleetUtilizationReportUseCase,
         GenerateMaintenanceReportUseCase generateMaintenanceReportUseCase,
         ExportMaintenanceReportUseCase exportMaintenanceReportUseCase,
+        GenerateCorrectiveMaintenanceReportUseCase generateCorrectiveMaintenanceReportUseCase,
+        ExportCorrectiveMaintenanceReportUseCase exportCorrectiveMaintenanceReportUseCase,
         GenerateDriverPerformanceReportUseCase generateDriverPerformanceReportUseCase,
         ExportDriverPerformanceReportUseCase exportDriverPerformanceReportUseCase,
         GenerateTripReportUseCase generateTripReportUseCase,
@@ -52,6 +56,8 @@ public class ReportController {
         this.exportFleetUtilizationReportUseCase = exportFleetUtilizationReportUseCase;
         this.generateMaintenanceReportUseCase = generateMaintenanceReportUseCase;
         this.exportMaintenanceReportUseCase = exportMaintenanceReportUseCase;
+        this.generateCorrectiveMaintenanceReportUseCase = generateCorrectiveMaintenanceReportUseCase;
+        this.exportCorrectiveMaintenanceReportUseCase = exportCorrectiveMaintenanceReportUseCase;
         this.generateDriverPerformanceReportUseCase = generateDriverPerformanceReportUseCase;
         this.exportDriverPerformanceReportUseCase = exportDriverPerformanceReportUseCase;
         this.generateTripReportUseCase = generateTripReportUseCase;
@@ -204,6 +210,56 @@ public class ReportController {
         headers.setContentType(MediaType.APPLICATION_PDF);
         headers.setContentDispositionFormData("attachment", 
             "relatorio-manutencao-" + LocalDate.now() + ".pdf");
+        
+        return ResponseEntity.ok()
+            .headers(headers)
+            .body(pdfFile);
+    }
+    
+    // ===== Relatório 3.1: Manutenção Corretiva =====
+    
+    @GetMapping("/corrective-maintenance")
+    @Operation(summary = "Gerar relatório de manutenção corretiva (JSON)")
+    public ResponseEntity<CorrectiveMaintenanceReportDTO> getCorrectiveMaintenanceReport(
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ) {
+        CorrectiveMaintenanceReportDTO report = generateCorrectiveMaintenanceReportUseCase.execute(startDate, endDate);
+        return ResponseEntity.ok(report);
+    }
+    
+    @GetMapping("/corrective-maintenance/export/excel")
+    @Operation(summary = "Exportar relatório de manutenção corretiva para Excel")
+    public ResponseEntity<byte[]> exportCorrectiveMaintenanceToExcel(
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ) throws IOException {
+        CorrectiveMaintenanceReportDTO report = generateCorrectiveMaintenanceReportUseCase.execute(startDate, endDate);
+        byte[] excelFile = exportCorrectiveMaintenanceReportUseCase.exportToExcel(report);
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", 
+            "relatorio-manutencao-corretiva-" + LocalDate.now() + ".xlsx");
+        
+        return ResponseEntity.ok()
+            .headers(headers)
+            .body(excelFile);
+    }
+    
+    @GetMapping("/corrective-maintenance/export/pdf")
+    @Operation(summary = "Exportar relatório de manutenção corretiva para PDF")
+    public ResponseEntity<byte[]> exportCorrectiveMaintenanceToPDF(
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ) throws IOException {
+        CorrectiveMaintenanceReportDTO report = generateCorrectiveMaintenanceReportUseCase.execute(startDate, endDate);
+        byte[] pdfFile = exportCorrectiveMaintenanceReportUseCase.exportToPDF(report);
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", 
+            "relatorio-manutencao-corretiva-" + LocalDate.now() + ".pdf");
         
         return ResponseEntity.ok()
             .headers(headers)

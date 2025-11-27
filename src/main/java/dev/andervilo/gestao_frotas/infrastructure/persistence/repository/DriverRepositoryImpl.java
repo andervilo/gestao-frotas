@@ -1,11 +1,15 @@
 package dev.andervilo.gestao_frotas.infrastructure.persistence.repository;
 
+import dev.andervilo.gestao_frotas.application.dto.DriverFilterDTO;
 import dev.andervilo.gestao_frotas.domain.entity.Driver;
 import dev.andervilo.gestao_frotas.domain.enums.DriverStatus;
 import dev.andervilo.gestao_frotas.domain.repository.DriverRepository;
+import dev.andervilo.gestao_frotas.domain.specification.DriverSpecification;
 import dev.andervilo.gestao_frotas.infrastructure.persistence.jpa.SpringDataDriverRepository;
 import dev.andervilo.gestao_frotas.infrastructure.persistence.mapper.DriverJpaMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -53,6 +57,13 @@ public class DriverRepositoryImpl implements DriverRepository {
         return jpaRepository.findAll().stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
+    }
+    
+    @Override
+    public Page<Driver> findAll(DriverFilterDTO filter, Pageable pageable) {
+        var spec = DriverSpecification.withFilters(filter);
+        return jpaRepository.findAll(spec, pageable)
+                .map(mapper::toDomain);
     }
     
     @Override
