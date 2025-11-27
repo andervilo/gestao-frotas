@@ -77,21 +77,38 @@
 			<optional>true</optional>
 		</dependency>
 		
-		<!-- JPA Metamodel Generator -->
-		<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-jpamodelgen</artifactId>
-			<scope>provided</scope>
-		</dependency>
+	<!-- JPA Metamodel Generator -->
+	<dependency>
+		<groupId>org.hibernate.orm</groupId>
+		<artifactId>hibernate-jpamodelgen</artifactId>
+		<scope>provided</scope>
+	</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+	<!-- Apache POI for Excel Export -->
+	<dependency>
+		<groupId>org.apache.poi</groupId>
+		<artifactId>poi-ooxml</artifactId>
+		<version>5.2.5</version>
+	</dependency>
 
-	<build>
+	<!-- iText for PDF Export -->
+	<dependency>
+		<groupId>com.itextpdf</groupId>
+		<artifactId>kernel</artifactId>
+		<version>8.0.2</version>
+	</dependency>
+	<dependency>
+		<groupId>com.itextpdf</groupId>
+		<artifactId>layout</artifactId>
+		<version>8.0.2</version>
+	</dependency>
+
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-test</artifactId>
+		<scope>test</scope>
+	</dependency>
+</dependencies>	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
