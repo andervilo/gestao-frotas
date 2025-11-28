@@ -1,9 +1,12 @@
 package dev.andervilo.gestao_frotas.domain.repository;
 
+import dev.andervilo.gestao_frotas.application.dto.VehicleFilterDTO;
 import dev.andervilo.gestao_frotas.domain.entity.Vehicle;
 import dev.andervilo.gestao_frotas.domain.enums.VehicleStatus;
 import dev.andervilo.gestao_frotas.domain.enums.VehicleType;
 import dev.andervilo.gestao_frotas.domain.valueobject.LicensePlate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +25,8 @@ public interface VehicleRepository {
     Optional<Vehicle> findByLicensePlate(LicensePlate licensePlate);
     
     List<Vehicle> findAll();
+    
+    Page<Vehicle> findAll(VehicleFilterDTO filter, Pageable pageable);
     
     List<Vehicle> findByStatus(VehicleStatus status);
     

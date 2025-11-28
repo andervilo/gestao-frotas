@@ -1,9 +1,12 @@
 package dev.andervilo.gestao_frotas.application.usecase.vehicle;
 
 import dev.andervilo.gestao_frotas.application.dto.VehicleDTO;
+import dev.andervilo.gestao_frotas.application.dto.VehicleFilterDTO;
 import dev.andervilo.gestao_frotas.application.mapper.VehicleDtoMapper;
 import dev.andervilo.gestao_frotas.domain.service.VehicleDomainService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,5 +33,10 @@ public class GetVehicleUseCase {
         return vehicleDomainService.findAllVehicles().stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
+    }
+    
+    public Page<VehicleDTO> findAll(VehicleFilterDTO filter, Pageable pageable) {
+        return vehicleDomainService.findAllVehicles(filter, pageable)
+                .map(mapper::toDto);
     }
 }

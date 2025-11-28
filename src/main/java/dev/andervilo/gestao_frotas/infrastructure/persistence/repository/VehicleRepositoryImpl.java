@@ -1,13 +1,17 @@
 package dev.andervilo.gestao_frotas.infrastructure.persistence.repository;
 
+import dev.andervilo.gestao_frotas.application.dto.VehicleFilterDTO;
 import dev.andervilo.gestao_frotas.domain.entity.Vehicle;
 import dev.andervilo.gestao_frotas.domain.enums.VehicleStatus;
 import dev.andervilo.gestao_frotas.domain.enums.VehicleType;
 import dev.andervilo.gestao_frotas.domain.repository.VehicleRepository;
+import dev.andervilo.gestao_frotas.domain.specification.VehicleSpecification;
 import dev.andervilo.gestao_frotas.domain.valueobject.LicensePlate;
 import dev.andervilo.gestao_frotas.infrastructure.persistence.jpa.SpringDataVehicleRepository;
 import dev.andervilo.gestao_frotas.infrastructure.persistence.mapper.VehicleJpaMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -49,6 +53,13 @@ public class VehicleRepositoryImpl implements VehicleRepository {
         return jpaRepository.findAll().stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
+    }
+    
+    @Override
+    public Page<Vehicle> findAll(VehicleFilterDTO filter, Pageable pageable) {
+        var spec = VehicleSpecification.withFilters(filter);
+        return jpaRepository.findAll(spec, pageable)
+                .map(mapper::toDomain);
     }
     
     @Override

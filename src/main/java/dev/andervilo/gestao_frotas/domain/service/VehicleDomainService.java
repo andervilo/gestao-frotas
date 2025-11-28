@@ -1,11 +1,14 @@
 package dev.andervilo.gestao_frotas.domain.service;
 
+import dev.andervilo.gestao_frotas.application.dto.VehicleFilterDTO;
 import dev.andervilo.gestao_frotas.domain.entity.Vehicle;
 import dev.andervilo.gestao_frotas.domain.enums.VehicleStatus;
 import dev.andervilo.gestao_frotas.domain.enums.VehicleType;
 import dev.andervilo.gestao_frotas.domain.repository.VehicleRepository;
 import dev.andervilo.gestao_frotas.domain.valueobject.LicensePlate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -78,6 +81,13 @@ public class VehicleDomainService {
      */
     public List<Vehicle> findAllVehicles() {
         return vehicleRepository.findAll();
+    }
+    
+    /**
+     * Finds all vehicles with filters and pagination.
+     */
+    public Page<Vehicle> findAllVehicles(VehicleFilterDTO filter, Pageable pageable) {
+        return vehicleRepository.findAll(filter, pageable);
     }
     
     /**

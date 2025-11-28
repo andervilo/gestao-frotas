@@ -1,16 +1,21 @@
 package dev.andervilo.gestao_frotas.presentation.controller;
 
 import dev.andervilo.gestao_frotas.application.dto.VehicleDTO;
+import dev.andervilo.gestao_frotas.application.dto.VehicleFilterDTO;
 import dev.andervilo.gestao_frotas.application.usecase.vehicle.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -42,9 +47,34 @@ public class VehicleController {
     }
     
     @GetMapping
-    @Operation(summary = "Get all vehicles")
-    public ResponseEntity<List<VehicleDTO>> getAll() {
-        List<VehicleDTO> vehicles = getVehicleUseCase.findAll();
+    @Operation(summary = "Get all vehicles with optional filters and pagination")
+    public ResponseEntity<Page<VehicleDTO>> getAll(
+            @Parameter(description = "License plate filter (partial match)")
+            @RequestParam(required = false) String licensePlate,
+            
+            @Parameter(description = "Brand filter (partial match)")
+            @RequestParam(required = false) String brand,
+            
+            @Parameter(description = "Model filter (partial match)")
+            @RequestParam(required = false) String model,
+            
+            @Parameter(description = "Year from")
+            @RequestParam(required = false) Integer yearFrom,
+            
+            @Parameter(description = "Year to")
+            @RequestParam(required = false) Integer yearTo,
+            
+            @PageableDefault(size = 20, sort = "licensePlate", direction = Sort.Direction.ASC) Pageable pageable) {
+        
+        VehicleFilterDTO filter = VehicleFilterDTO.builder()
+                .licensePlate(licensePlate)
+                .brand(brand)
+                .model(model)
+                .yearFrom(yearFrom)
+                .yearTo(yearTo)
+                .build();
+        
+        Page<VehicleDTO> vehicles = getVehicleUseCase.findAll(filter, pageable);
         return ResponseEntity.ok(vehicles);
     }
     
