@@ -1,10 +1,13 @@
 package dev.andervilo.gestao_frotas.application.usecase.trip;
 
 import dev.andervilo.gestao_frotas.application.dto.TripDTO;
+import dev.andervilo.gestao_frotas.application.dto.TripFilterDTO;
 import dev.andervilo.gestao_frotas.application.mapper.TripDtoMapper;
 import dev.andervilo.gestao_frotas.domain.entity.Trip;
 import dev.andervilo.gestao_frotas.domain.service.TripDomainService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +37,12 @@ public class GetTripUseCase {
         return trips.stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
+    }
+    
+    @Transactional(readOnly = true)
+    public Page<TripDTO> findAll(TripFilterDTO filter, Pageable pageable) {
+        Page<Trip> trips = tripDomainService.findAllTrips(filter, pageable);
+        return trips.map(mapper::toDto);
     }
     
     @Transactional(readOnly = true)

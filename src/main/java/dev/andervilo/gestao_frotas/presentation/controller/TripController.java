@@ -1,16 +1,23 @@
 package dev.andervilo.gestao_frotas.presentation.controller;
 
 import dev.andervilo.gestao_frotas.application.dto.TripDTO;
+import dev.andervilo.gestao_frotas.application.dto.TripFilterDTO;
 import dev.andervilo.gestao_frotas.application.usecase.trip.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,9 +50,34 @@ public class TripController {
     }
     
     @GetMapping
-    @Operation(summary = "Get all trips")
-    public ResponseEntity<List<TripDTO>> getAll() {
-        List<TripDTO> trips = getTripUseCase.findAll();
+    @Operation(summary = "Get all trips with filters and pagination")
+    public ResponseEntity<Page<TripDTO>> getAll(
+            @RequestParam(required = false) UUID vehicleId,
+            @RequestParam(required = false) UUID driverId,
+            @RequestParam(required = false) String destination,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateTo,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDateFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDateTo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "startDateTime") String sortBy,
+            @RequestParam(defaultValue = "DESC") String direction) {
+        
+        TripFilterDTO filter = TripFilterDTO.builder()
+                .vehicleId(vehicleId)
+                .driverId(driverId)
+                .destination(destination)
+                .startDateFrom(startDateFrom)
+                .startDateTo(startDateTo)
+                .endDateFrom(endDateFrom)
+                .endDateTo(endDateTo)
+                .build();
+        
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        
+        Page<TripDTO> trips = getTripUseCase.findAll(filter, pageable);
         return ResponseEntity.ok(trips);
     }
     

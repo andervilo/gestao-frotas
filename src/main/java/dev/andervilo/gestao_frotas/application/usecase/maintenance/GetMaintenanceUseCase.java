@@ -1,12 +1,15 @@
 package dev.andervilo.gestao_frotas.application.usecase.maintenance;
 
 import dev.andervilo.gestao_frotas.application.dto.MaintenanceDTO;
+import dev.andervilo.gestao_frotas.application.dto.MaintenanceFilterDTO;
 import dev.andervilo.gestao_frotas.application.mapper.MaintenanceDtoMapper;
 import dev.andervilo.gestao_frotas.domain.entity.Maintenance;
 import dev.andervilo.gestao_frotas.domain.enums.MaintenanceStatus;
 import dev.andervilo.gestao_frotas.domain.enums.MaintenanceType;
 import dev.andervilo.gestao_frotas.domain.service.MaintenanceDomainService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +39,12 @@ public class GetMaintenanceUseCase {
         return maintenances.stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
+    }
+    
+    @Transactional(readOnly = true)
+    public Page<MaintenanceDTO> findAll(MaintenanceFilterDTO filter, Pageable pageable) {
+        Page<Maintenance> maintenances = maintenanceDomainService.findAllMaintenances(filter, pageable);
+        return maintenances.map(mapper::toDto);
     }
     
     @Transactional(readOnly = true)

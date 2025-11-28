@@ -1,11 +1,14 @@
 package dev.andervilo.gestao_frotas.domain.service;
 
+import dev.andervilo.gestao_frotas.application.dto.MaintenanceFilterDTO;
 import dev.andervilo.gestao_frotas.domain.entity.Maintenance;
 import dev.andervilo.gestao_frotas.domain.entity.Vehicle;
 import dev.andervilo.gestao_frotas.domain.enums.MaintenanceStatus;
 import dev.andervilo.gestao_frotas.domain.enums.MaintenanceType;
 import dev.andervilo.gestao_frotas.domain.repository.MaintenanceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -98,6 +101,13 @@ public class MaintenanceDomainService {
      */
     public List<Maintenance> findAllMaintenances() {
         return maintenanceRepository.findAll();
+    }
+    
+    /**
+     * Finds all maintenances with filters and pagination.
+     */
+    public Page<Maintenance> findAllMaintenances(MaintenanceFilterDTO filter, Pageable pageable) {
+        return maintenanceRepository.findAll(filter, pageable);
     }
     
     /**

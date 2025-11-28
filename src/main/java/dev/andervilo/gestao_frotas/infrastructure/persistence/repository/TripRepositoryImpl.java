@@ -1,10 +1,14 @@
 package dev.andervilo.gestao_frotas.infrastructure.persistence.repository;
 
+import dev.andervilo.gestao_frotas.application.dto.TripFilterDTO;
 import dev.andervilo.gestao_frotas.domain.entity.Trip;
 import dev.andervilo.gestao_frotas.domain.repository.TripRepository;
 import dev.andervilo.gestao_frotas.infrastructure.persistence.jpa.SpringDataTripRepository;
 import dev.andervilo.gestao_frotas.infrastructure.persistence.mapper.TripJpaMapper;
+import dev.andervilo.gestao_frotas.infrastructure.persistence.specification.TripSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -40,6 +44,13 @@ public class TripRepositoryImpl implements TripRepository {
         return jpaRepository.findAll().stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
+    }
+    
+    @Override
+    public Page<Trip> findAll(TripFilterDTO filter, Pageable pageable) {
+        var spec = TripSpecification.withFilters(filter);
+        return jpaRepository.findAll(spec, pageable)
+                .map(mapper::toDomain);
     }
     
     @Override

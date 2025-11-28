@@ -1,12 +1,16 @@
 package dev.andervilo.gestao_frotas.infrastructure.persistence.repository;
 
+import dev.andervilo.gestao_frotas.application.dto.MaintenanceFilterDTO;
 import dev.andervilo.gestao_frotas.domain.entity.Maintenance;
 import dev.andervilo.gestao_frotas.domain.enums.MaintenanceStatus;
 import dev.andervilo.gestao_frotas.domain.enums.MaintenanceType;
 import dev.andervilo.gestao_frotas.domain.repository.MaintenanceRepository;
 import dev.andervilo.gestao_frotas.infrastructure.persistence.jpa.SpringDataMaintenanceRepository;
 import dev.andervilo.gestao_frotas.infrastructure.persistence.mapper.MaintenanceJpaMapper;
+import dev.andervilo.gestao_frotas.infrastructure.persistence.specification.MaintenanceSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -42,6 +46,13 @@ public class MaintenanceRepositoryImpl implements MaintenanceRepository {
         return jpaRepository.findAll().stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
+    }
+    
+    @Override
+    public Page<Maintenance> findAll(MaintenanceFilterDTO filter, Pageable pageable) {
+        var spec = MaintenanceSpecification.withFilters(filter);
+        return jpaRepository.findAll(spec, pageable)
+                .map(mapper::toDomain);
     }
     
     @Override

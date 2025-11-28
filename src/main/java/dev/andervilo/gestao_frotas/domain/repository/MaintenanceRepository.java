@@ -1,8 +1,11 @@
 package dev.andervilo.gestao_frotas.domain.repository;
 
+import dev.andervilo.gestao_frotas.application.dto.MaintenanceFilterDTO;
 import dev.andervilo.gestao_frotas.domain.entity.Maintenance;
 import dev.andervilo.gestao_frotas.domain.enums.MaintenanceStatus;
 import dev.andervilo.gestao_frotas.domain.enums.MaintenanceType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +21,8 @@ public interface MaintenanceRepository {
     Optional<Maintenance> findById(UUID id);
     
     List<Maintenance> findAll();
+    
+    Page<Maintenance> findAll(MaintenanceFilterDTO filter, Pageable pageable);
     
     List<Maintenance> findByVehicleId(UUID vehicleId);
     

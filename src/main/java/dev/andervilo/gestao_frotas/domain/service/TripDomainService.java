@@ -1,10 +1,13 @@
 package dev.andervilo.gestao_frotas.domain.service;
 
+import dev.andervilo.gestao_frotas.application.dto.TripFilterDTO;
 import dev.andervilo.gestao_frotas.domain.entity.Driver;
 import dev.andervilo.gestao_frotas.domain.entity.Trip;
 import dev.andervilo.gestao_frotas.domain.entity.Vehicle;
 import dev.andervilo.gestao_frotas.domain.repository.TripRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -97,6 +100,13 @@ public class TripDomainService {
      */
     public List<Trip> findAllTrips() {
         return tripRepository.findAll();
+    }
+    
+    /**
+     * Finds all trips with filters and pagination.
+     */
+    public Page<Trip> findAllTrips(TripFilterDTO filter, Pageable pageable) {
+        return tripRepository.findAll(filter, pageable);
     }
     
     /**
